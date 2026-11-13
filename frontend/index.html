@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HelpDeskX — Intelligent IT Helpdesk Ticket Router</title>
+  <link rel="stylesheet" href="/css/enterprise.css">
+  <!-- Chart.js for live real-time canvas visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- ==================== PAGE 1: LOGIN PAGE ==================== -->
+  <div id="view-login" class="login-split-container">
+    <!-- Left Brand Panel -->
+    <div class="login-brand-panel">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem;">
+          <div class="brand-badge" style="width: 44px; height: 44px; font-size: 1.3rem;">HX</div>
+          <div>
+            <h1 style="font-size: 1.5rem; font-weight: 800; color: #FFFFFF;">HelpDeskX</h1>
+            <p style="font-size: 0.78rem; color: var(--teal); font-weight: 600; text-transform: uppercase;">
+              Intelligent IT Support. Smarter Ticket Routing.
+            </p>
+          </div>
+        </div>
+
+        <h2 style="font-size: 2.2rem; font-weight: 800; line-height: 1.2; margin-bottom: 1.25rem;">
+          Automata-Powered Ticket Classification & Enterprise Dispatch
+        </h2>
+        <p style="color: #94A3B8; font-size: 0.95rem; line-height: 1.6; max-width: 500px;">
+          Seamlessly integrates <strong>Automata Theory (BCS503)</strong> for deterministic DFA identifier validation and <strong>Computer Networks (BCS502)</strong> for 8-ticket capacity round-robin routing and Level-2 escalation.
+        </p>
+      </div>
+
+      <div style="font-size: 0.8rem; color: #64748B;">
+        Academic Engineering Demonstration &bull; 5th Semester &bull; Flask &bull; SQLite &bull; REST
+      </div>
+    </div>
+
+    <!-- Right Login Form Panel -->
+    <div class="login-form-panel">
+      <div style="margin-bottom: 2rem;">
+        <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--navy); margin-bottom: 0.5rem;">
+          Sign in to your account
+        </h2>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">
+          Select a role or enter your enterprise credentials to access HelpDeskX.
+        </p>
+      </div>
+
+      <!-- Quick Demo Login Pills -->
+      <div style="margin-bottom: 1.5rem;">
+        <label class="form-label">Quick Demo Login:</label>
+        <div class="demo-account-pills">
+          <button type="button" class="demo-pill" id="pill-admin">
+            👑 Admin
+          </button>
+          <button type="button" class="demo-pill" id="pill-staff">
+            👤 Staff / User
+          </button>
+          <button type="button" class="demo-pill" id="pill-handler">
+            🛠️ Handler 1 (Hardware)
+          </button>
+        </div>
+      </div>
+
+      <form id="form-login">
+        <div class="form-group">
+          <label class="form-label" for="login-email">Email Address</label>
+          <input type="email" id="login-email" class="form-input" placeholder="name@helpdeskx.com" required value="admin@helpdeskx.com">
+        </div>
+
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+            <label class="form-label" for="login-password" style="margin-bottom: 0;">Password</label>
+            <button type="button" id="btn-toggle-password" style="background:none; border:none; color:var(--teal); font-size:0.75rem; font-weight:600; cursor:pointer;">Show</button>
+          </div>
+          <input type="password" id="login-password" class="form-input" placeholder="Enter password" required value="Admin@123">
+        </div>
+
+        <div id="login-error-msg" style="color: var(--red); font-size: 0.8rem; margin-bottom: 1rem; display: none;"></div>
+
+        <button type="submit" id="btn-submit-login" class="btn btn-navy" style="width: 100%; padding: 0.75rem; font-size: 0.95rem;">
+          Sign In to HelpDeskX &rarr;
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN AUTHENTICATED APP CONTAINER ==================== -->
+  <div id="app-authenticated" class="app-container" style="display: none;">
+
+    <!-- FIXED SIDEBAR NAVIGATION -->
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-badge">HX</div>
+        <div class="brand-text">
+          <h1>HelpDeskX</h1>
+          <p>Ticket Router</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Core Views</div>
+        <a class="nav-link active" data-page="staff-dashboard">
+          📊 Staff Dashboard
+        </a>
+        <a class="nav-link" data-page="submit-ticket">
+          ➕ Submit IT Report
+        </a>
+        <a class="nav-link" data-page="track-ticket">
+          🔍 Track Ticket
+        </a>
+
+        <div class="nav-section-title">Support & Dispatch</div>
+        <a class="nav-link" data-page="handler-dashboard">
+          🛠️ Handler Dashboard
+        </a>
+        <a class="nav-link" data-page="routing-management">
+          🌐 Routing & Capacity (BCS502)
+        </a>
+
+        <div class="nav-section-title">Administration</div>
+        <a class="nav-link" data-page="analytics-dashboard">
+          📈 Analytics & Metrics
+        </a>
+        <a class="nav-link" data-page="team-management">
+          👥 Team Management
+        </a>
+        <a class="nav-link" data-page="automata-lab">
+          🧪 Automata Lab (BCS503)
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-profile-badge">
+          <div class="user-info">
+            <span id="current-user-name" class="user-name">Administrator</span>
+            <span id="current-user-role" class="user-role-tag">ADMIN</span>
+          </div>
+          <button id="btn-logout" class="btn btn-secondary btn-sm" title="Sign out" style="padding: 0.25rem 0.5rem; font-size: 0.72rem;">
+            Logout
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN BODY -->
+    <div class="app-main">
+      <!-- TOP NAVBAR -->
+      <header class="top-navbar">
+        <div class="navbar-title">
+          <h2 id="top-nav-page-title">Staff Dashboard</h2>
+          <div class="system-badge">
+            <span class="system-dot"></span>
+            <span>SQLite Active &bull; DFA Validated &bull; 8-Cap Enforced</span>
+          </div>
+        </div>
+
+        <div class="navbar-actions">
+          <!-- Role Switcher for instant evaluator audit -->
+          <div style="display: flex; align-items: center; gap: 0.5rem; background: var(--bg-page); padding: 0.35rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-light);">
+            <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">AUDIT ROLE:</span>
+            <select id="quick-role-toggle" style="background: transparent; border: none; font-size: 0.8rem; font-weight: 700; color: var(--navy); cursor: pointer; outline: none;">
+              <option value="ADMIN">ADMIN</option>
+              <option value="STAFF">STAFF / USER</option>
+              <option value="HANDLER">HANDLER</option>
+            </select>
+          </div>
+
+          <button id="btn-top-submit" class="btn btn-primary btn-sm">
+            ➕ New Report
+          </button>
+        </div>
+      </header>
+
+      <!-- CONTENT BODY -->
+      <main class="content-body">
+
+        <!-- ==================== PAGE 2: STAFF DASHBOARD ==================== -->
+        <section id="page-staff-dashboard" class="page-view active">
+          <!-- KPI Stats -->
+          <div class="grid-stats">
+            <div class="stat-card">
+              <span class="stat-card-label">Total Tickets</span>
+              <span id="dash-stat-total" class="stat-card-value">0</span>
+              <span class="stat-card-desc">All recorded complaints</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-card-label">Pending Dispatch</span>
+              <span id="dash-stat-pending" class="stat-card-value" style="color: var(--amber);">0</span>
+              <span class="stat-card-desc">Awaiting allocation</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-card-label">Assigned</span>
+              <span id="dash-stat-assigned" class="stat-card-value" style="color: #0284C7;">0</span>
+              <span class="stat-card-desc">Routed to team handler</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-card-label">In Progress</span>
+              <span id="dash-stat-progress" class="stat-card-value" style="color: #7C3AED;">0</span>
+              <span class="stat-card-desc">Under active investigation</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-card-label">Resolved</span>
+              <span id="dash-stat-resolved" class="stat-card-value" style="color: var(--green);">0</span>
+              <span class="stat-card-desc">Successfully completed</span>
+            </div>
+          </div>
+
+          <!-- Tickets Table Card -->
+          <div class="card">
+            <div class="card-title-bar">
+              <h3>Support Tickets</h3>
+              <div style="display: flex; gap: 0.75rem; align-items: center;">
+                <input type="text" id="dash-search" class="form-input" placeholder="Search ticket ID or description..." style="width: 250px; padding: 0.4rem 0.65rem; font-size: 0.8rem;">
+                <select id="dash-filter-category" class="form-select" style="width: 140px; padding: 0.4rem 0.65rem; font-size: 0.8rem;">
+                  <option value="">All Categories</option>
+                  <option value="HARDWARE">Hardware</option>
+                  <option value="SOFTWARE">Software</option>
+                  <option value="NETWORK">Network</option>
+                  <option value="ACCESS">Access</option>
+                  <option value="OTHER">Other</option>
+                </select>
+                <select id="dash-filter-status" class="form-select" style="width: 130px; padding: 0.4rem 0.65rem; font-size: 0.8rem;">
+                  <option value="">All Statuses</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Assigned">Assigned</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Resolved">Resolved</option>
+                </select>
+                <button id="btn-refresh-dashboard" class="btn btn-secondary btn-sm">🔄 Refresh</button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="enterprise-table">
+                <thead>
+                  <tr>
+                    <th>Ticket ID</th>
+                    <th>Identifier</th>
+                    <th>Category</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Assigned Team & Handler</th>
+                    <th>Submission Time</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="dash-tickets-body">
+                  <tr><td colspan="8" style="text-align: center;">Loading tickets from SQLite...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== PAGE 3: REPORT SUBMISSION PAGE ==================== -->
+        <section id="page-submit-ticket" class="page-view">
+          <div class="card" style="max-width: 820px; margin: 0 auto;">
+            <div class="card-title-bar">
+              <div>
+                <h3>Submit New IT Support Complaint</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">
+                  Ticket identifiers must adhere to format <code>[A-Z]{2}-[0-9]{3}-[HML]</code> (e.g. <code>CS-101-H</code>)
+                </p>
+              </div>
+              <span class="badge badge-software">Live DFA + Regex Verification</span>
+            </div>
+
+            <form id="form-submit-ticket">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="sub-name">Reporter Name *</label>
+                  <input type="text" id="sub-name" class="form-input" required value="Prof. Alan Turing">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="sub-email">Email Address *</label>
+                  <input type="email" id="sub-email" class="form-input" required value="staff@helpdeskx.com">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="sub-dept">Department *</label>
+                  <select id="sub-dept" class="form-select" required>
+                    <option value="CS" selected>CS — Computer Science</option>
+                    <option value="IT">IT — Information Technology</option>
+                    <option value="HR">HR — Human Resources</option>
+                    <option value="EC">EC — Electronics & Comm</option>
+                    <option value="ME">ME — Mechanical Eng</option>
+                    <option value="EE">EE — Electrical Eng</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="sub-identifier">
+                    Ticket Identifier * <span style="font-weight: 400; color: var(--text-muted);">(DEPT-ISSUE-PRIORITY)</span>
+                  </label>
+                  <input type="text" id="sub-identifier" class="form-input" placeholder="e.g. CS-101-H" required value="CS-101-H" style="font-family: var(--font-mono); font-weight: 600;">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="sub-issue-code">Issue Code</label>
+                  <input type="text" id="sub-issue-code" class="form-input" placeholder="e.g. 101" value="101">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="sub-urgency">Urgency Code</label>
+                  <select id="sub-urgency" class="form-select">
+                    <option value="H" selected>H — High Priority</option>
+                    <option value="M">M — Medium Priority</option>
+                    <option value="L">L — Low Priority</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="sub-description">Problem Description *</label>
+                <textarea id="sub-description" class="form-textarea" rows="4" placeholder="Detail hardware, software, network, or access issue..." required>My laptop screen is flickering continuously and keyboard mouse are unresponsive.</textarea>
+              </div>
+
+              <!-- Live DFA & Regex Validation Status Box -->
+              <div id="live-validation-box" style="background-color: var(--bg-page); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                  <span style="font-size: 0.82rem; font-weight: 700; color: var(--navy);">
+                    ⚡ Live Automata & Classification Preview
+                  </span>
+                  <span id="live-val-badge" class="badge badge-hardware">VALID</span>
+                </div>
+                <div class="form-row" style="font-size: 0.8rem;">
+                  <div>DFA Validation: <strong id="live-dfa-res" style="color: var(--teal);">VALID</strong></div>
+                  <div>Regex Validation: <strong id="live-regex-res" style="color: var(--teal);">VALID</strong></div>
+                  <div>Detected Category: <strong id="live-detected-cat" style="color: #0284C7;">HARDWARE</strong></div>
+                  <div>Detected Priority: <strong id="live-detected-prio" style="color: var(--red);">HIGH (H)</strong></div>
+                </div>
+                <div id="live-val-reason" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">
+                  Both DFA and Regex independently verified and accepted ticket identifier.
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+                <button type="button" id="btn-prefill-invalid" class="btn btn-secondary">
+                  ⚠️ Test Invalid Identifier
+                </button>
+                <button type="submit" id="btn-submit-report" class="btn btn-primary">
+                  🚀 Submit & Route Ticket
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ==================== PAGE 4: USER TICKET TRACKING ==================== -->
+        <section id="page-track-ticket" class="page-view">
+          <div class="card" style="max-width: 820px; margin: 0 auto;">
+            <div class="card-title-bar">
+              <h3>Track IT Complaint Status</h3>
+              <span class="badge badge-network">Real-Time SQLite History</span>
+            </div>
+
+            <!-- Search Form -->
+            <form id="form-track-search" style="display: flex; gap: 0.75rem; margin-bottom: 1.75rem;">
+              <input type="text" id="track-search-input" class="form-input" placeholder="Enter Public Ticket ID (e.g. HDX-2026-0001) or Identifier (e.g. CS-101-H)" required style="flex: 1;">
+              <button type="submit" class="btn btn-navy">Search & Track</button>
+            </form>
+
+            <div id="track-results-area" style="display: none;">
+              <!-- Timeline -->
+              <div class="tracking-timeline">
+                <div id="step-submitted" class="timeline-step completed">
+                  <div class="step-circle">1</div>
+                  <div class="step-label">Submitted</div>
+                  <div id="time-submitted" class="step-time">—</div>
+                </div>
+                <div id="step-validated" class="timeline-step completed">
+                  <div class="step-circle">2</div>
+                  <div class="step-label">Validated</div>
+                  <div id="time-validated" class="step-time">DFA + Regex</div>
+                </div>
+                <div id="step-assigned" class="timeline-step">
+                  <div class="step-circle">3</div>
+                  <div class="step-label">Assigned</div>
+                  <div id="time-assigned" class="step-time">—</div>
+                </div>
+                <div id="step-progress" class="timeline-step">
+                  <div class="step-circle">4</div>
+                  <div class="step-label">In Progress</div>
+                  <div id="time-progress" class="step-time">—</div>
+                </div>
+                <div id="step-resolved" class="timeline-step">
+                  <div class="step-circle">5</div>
+                  <div class="step-label">Resolved</div>
+                  <div id="time-resolved" class="step-time">—</div>
+                </div>
+              </div>
+
+              <!-- Ticket Details -->
+              <div class="form-row" style="background-color: var(--bg-page); padding: 1.25rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; font-size: 0.85rem;">
+                <div><strong>Ticket ID:</strong> <span id="track-detail-id">—</span></div>
+                <div><strong>Identifier:</strong> <span id="track-detail-ident">—</span></div>
+                <div><strong>Category:</strong> <span id="track-detail-cat">—</span></div>
+                <div><strong>Priority:</strong> <span id="track-detail-prio">—</span></div>
+                <div><strong>Assigned Team:</strong> <span id="track-detail-team">—</span></div>
+                <div><strong>Handler:</strong> <span id="track-detail-handler">—</span></div>
+                <div><strong>Current Status:</strong> <span id="track-detail-status">—</span></div>
+                <div><strong>Reporter:</strong> <span id="track-detail-reporter">—</span></div>
+              </div>
+
+              <!-- Status History Audit Table -->
+              <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--navy); margin-bottom: 0.75rem;">
+                Recorded Status Transition History
+              </h4>
+              <div class="table-responsive">
+                <table class="enterprise-table">
+                  <thead>
+                    <tr>
+                      <th>Time</th>
+                      <th>Previous Status</th>
+                      <th>New Status</th>
+                      <th>Changed By</th>
+                      <th>Operational Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody id="track-history-body">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== PAGE 5: HANDLER DASHBOARD ==================== -->
+        <section id="page-handler-dashboard" class="page-view">
+          <!-- Handler KPI / Capacity -->
+          <div class="grid-stats">
+            <div class="stat-card">
+              <span class="stat-card-label">My Assigned Tickets</span>
+              <span id="handler-stat-total" class="stat-card-value">0</span>
+              <span class="stat-card-desc">Active tickets assigned to you</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-card-label">Current Workload</span>
+              <span id="handler-stat-load" class="stat-card-value" style="color: var(--teal);">0 / 8</span>
+              <span class="stat-card-desc">Team capacity limit: 8 tickets</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-card-label">My Availability</span>
+              <span id="handler-stat-avail" class="stat-card-value" style="font-size: 1.35rem; color: var(--green);">Available</span>
+              <span class="stat-card-desc">Eligible for Round-Robin</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title-bar">
+              <h3>Assigned Workload Table</h3>
+              <div style="display: flex; gap: 0.75rem;">
+                <button id="btn-toggle-my-avail" class="btn btn-secondary btn-sm">
+                  🔄 Toggle Availability Status
+                </button>
+                <button id="btn-refresh-handler" class="btn btn-secondary btn-sm">
+                  🔄 Refresh
+                </button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="enterprise-table">
+                <thead>
+                  <tr>
+                    <th>Ticket ID</th>
+                    <th>Dept</th>
+                    <th>Category</th>
+                    <th>Priority</th>
+                    <th>Description</th>
+                    <th>Submitted</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="handler-tickets-body">
+                  <tr><td colspan="8" style="text-align: center;">Loading handler tickets...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== PAGE 6: ROUTING MANAGEMENT DASHBOARD (BCS502) ==================== -->
+        <section id="page-routing-management" class="page-view">
+          <div class="card-title-bar" style="border: none; padding: 0 0 1rem 0;">
+            <div>
+              <h2>Computer Networks — Helpdesk Routing & Capacity Dashboard</h2>
+              <p style="font-size: 0.85rem; color: var(--text-muted);">
+                Four Helpdesk Teams with 8-Ticket Capacity Enforcement & Level-2 Escalation
+              </p>
+            </div>
+            <button id="btn-refresh-routing" class="btn btn-secondary btn-sm">🔄 Refresh Status</button>
+          </div>
+
+          <!-- 4 Teams Workload Cards -->
+          <div class="grid-stats" id="teams-capacity-cards">
+            <!-- Dynamically populated Team 1 to 4 cards -->
+          </div>
+
+          <!-- Configurable Routing Rules Table -->
+          <div class="card">
+            <div class="card-title-bar">
+              <div>
+                <h3>Configurable Department & Category Routing Table</h3>
+                <p style="font-size: 0.78rem; color: var(--text-muted);">
+                  Determines Primary Team and Backup Team based on Department code and Issue category.
+                </p>
+              </div>
+              <button id="btn-open-add-rule-modal" class="btn btn-navy btn-sm">
+                ➕ Add Routing Rule
+              </button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="enterprise-table">
+                <thead>
+                  <tr>
+                    <th>Department</th>
+                    <th>Issue Category</th>
+                    <th>Primary Team (8 Cap)</th>
+                    <th>Backup Team (Overflow)</th>
+                    <th>Rule Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="routing-rules-table-body">
+                  <!-- Populated from SQLite -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Level-2 Escalations Queue Table -->
+          <div class="card">
+            <div class="card-title-bar">
+              <div>
+                <h3 style="color: var(--red);">🚨 Level-2 Escalations Queue</h3>
+                <p style="font-size: 0.78rem; color: var(--text-muted);">
+                  Triggered automatically when all 4 primary teams reach 8-ticket capacity.
+                </p>
+              </div>
+              <span id="escalations-count-badge" class="badge badge-hardware">0 Active Escalations</span>
+            </div>
+
+            <div class="table-responsive">
+              <table class="enterprise-table">
+                <thead>
+                  <tr>
+                    <th>Escalation ID</th>
+                    <th>Ticket Public ID</th>
+                    <th>Department</th>
+                    <th>Category</th>
+                    <th>Escalation Reason</th>
+                    <th>Escalation Time</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="escalations-table-body">
+                  <tr><td colspan="8" style="text-align: center;">No active Level-2 escalations.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== PAGE 7: ANALYTICS DASHBOARD ==================== -->
+        <section id="page-analytics-dashboard" class="page-view">
+          <div class="card-title-bar" style="border: none; padding: 0 0 1rem 0;">
+            <div>
+              <h2>System Analytics & Performance Metrics</h2>
+              <p style="font-size: 0.85rem; color: var(--text-muted);">
+                Calculated dynamically from actual SQLite database records
+              </p>
+            </div>
+            <button id="btn-refresh-analytics" class="btn btn-secondary btn-sm">🔄 Refresh Analytics</button>
+          </div>
+
+          <!-- Charts Grid -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem; margin-bottom: 1.75rem;">
+            <!-- Category Distribution -->
+            <div class="card" style="margin-bottom: 0;">
+              <div class="card-title-bar">
+                <h3>Category-Wise Ticket Distribution</h3>
+                <span class="badge badge-software">5 Categories</span>
+              </div>
+              <div style="position: relative; height: 260px;">
+                <canvas id="chart-categories"></canvas>
+              </div>
+            </div>
+
+            <!-- Priority Distribution -->
+            <div class="card" style="margin-bottom: 0;">
+              <div class="card-title-bar">
+                <h3>Priority-Wise Distribution (H / M / L)</h3>
+              </div>
+              <div style="position: relative; height: 260px;">
+                <canvas id="chart-priorities"></canvas>
+              </div>
+            </div>
+
+            <!-- Department Distribution -->
+            <div class="card" style="margin-bottom: 0;">
+              <div class="card-title-bar">
+                <h3>Department-Wise Complaints (CS, IT, HR, EC, ME, EE)</h3>
+              </div>
+              <div style="position: relative; height: 260px;">
+                <canvas id="chart-departments"></canvas>
+              </div>
+            </div>
+
+            <!-- Team Workload & 8-Ticket Capacity Bar Chart -->
+            <div class="card" style="margin-bottom: 0;">
+              <div class="card-title-bar">
+                <h3>Team Workload vs Maximum Capacity (8 Open)</h3>
+              </div>
+              <div style="position: relative; height: 260px;">
+                <canvas id="chart-team-workload"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== PAGE 8: TEAM MANAGEMENT ==================== -->
+        <section id="page-team-management" class="page-view">
+          <div class="card-title-bar" style="border: none; padding: 0 0 1rem 0;">
+            <div>
+              <h2>Team & Handler Roster Management</h2>
+              <p style="font-size: 0.85rem; color: var(--text-muted);">
+                Manage handler assignment, availability toggle, and team 8-ticket capacity limits.
+              </p>
+            </div>
+            <button id="btn-open-add-handler-modal" class="btn btn-navy btn-sm">
+              ➕ Add New Handler
+            </button>
+          </div>
+
+          <div class="card">
+            <div class="card-title-bar">
+              <h3>Registered Support Handlers</h3>
+              <button id="btn-refresh-handlers" class="btn btn-secondary btn-sm">🔄 Refresh</button>
+            </div>
+            <div class="table-responsive">
+              <table class="enterprise-table">
+                <thead>
+                  <tr>
+                    <th>Handler Name</th>
+                    <th>Email Address</th>
+                    <th>Assigned Team</th>
+                    <th>Department</th>
+                    <th>Active Tickets</th>
+                    <th>Availability</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="handlers-table-body">
+                  <!-- Populated from SQLite -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== AUTOMATA LAB (BCS503) ==================== -->
+        <section id="page-automata-lab" class="page-view">
+          <div class="card-title-bar" style="border: none; padding: 0 0 1rem 0;">
+            <div>
+              <h2>BCS503 Automata Theory & Computability Studio</h2>
+              <p style="font-size: 0.85rem; color: var(--text-muted);">
+                Mathematical Formal DFA Model M = (Q, &Sigma;, &delta;, q0, F) Validation & Tracing
+              </p>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="card" style="margin-bottom: 0;">
+              <div class="card-title-bar">
+                <h3>Test Ticket Identifier Transition</h3>
+                <span class="badge badge-software">Format: [A-Z]{2}-[0-9]{3}-[HML]</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="lab-test-id-input">Input Identifier String:</label>
+                <input type="text" id="lab-test-id-input" class="form-input" value="CS-101-H" style="font-family: var(--font-mono); font-weight: 700;">
+              </div>
+
+              <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                <button type="button" class="btn btn-secondary btn-sm lab-sample-btn" data-val="CS-101-H">Valid: CS-101-H</button>
+                <button type="button" class="btn btn-secondary btn-sm lab-sample-btn" data-val="IT-205-M">Valid: IT-205-M</button>
+                <button type="button" class="btn btn-secondary btn-sm lab-sample-btn" data-val="C-101-H">Invalid Dept: C-101-H</button>
+                <button type="button" class="btn btn-secondary btn-sm lab-sample-btn" data-val="CS-10-H">Invalid Digits: CS-10-H</button>
+                <button type="button" class="btn btn-secondary btn-sm lab-sample-btn" data-val="CS-101-X">Invalid Prio: CS-101-X</button>
+                <button type="button" class="btn btn-secondary btn-sm lab-sample-btn" data-val="cs-101-h">Lowercase: cs-101-h</button>
+              </div>
+
+              <button type="button" id="btn-run-lab-trace" class="btn btn-primary">
+                ▶ Process Through DFA State Machine
+              </button>
+            </div>
+
+            <!-- Mathematical Formal DFA Specification -->
+            <div class="card" style="margin-bottom: 0;">
+              <div class="card-title-bar">
+                <h3>Formal 5-Tuple Definition</h3>
+              </div>
+              <div style="font-size: 0.85rem; line-height: 1.8;">
+                <div><strong>States (Q):</strong> <code style="color: var(--teal);">{q0, q1, ..., q9, qD}</code></div>
+                <div><strong>Alphabet (&Sigma;):</strong> <code>[A-Z0-9-HML]</code></div>
+                <div><strong>Start State (q0):</strong> <code>q0</code></div>
+                <div><strong>Accepting State (F):</strong> <code style="color: var(--green);">{q9}</code></div>
+                <div><strong>Trap/Dead State:</strong> <code style="color: var(--red);">qD</code></div>
+                <div><strong>Language (L):</strong> <code>L = { ww'-ddd-p }</code></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step-by-Step Transition Trace Table -->
+          <div class="card">
+            <div class="card-title-bar">
+              <h3>DFA Execution State Transition Log</h3>
+              <span id="lab-final-status-badge" class="badge badge-software">PASSED</span>
+            </div>
+            <div class="table-responsive">
+              <table class="enterprise-table" style="font-family: var(--font-mono); font-size: 0.82rem;">
+                <thead>
+                  <tr>
+                    <th>Step #</th>
+                    <th>Input Symbol</th>
+                    <th>Current State &delta;(q, c)</th>
+                    <th>Next State</th>
+                    <th>State Description</th>
+                  </tr>
+                </thead>
+                <tbody id="lab-trace-table-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- 1. Update Ticket Status Modal -->
+  <div id="modal-update-status" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Update Ticket Status</h3>
+        <button class="modal-close" data-close="modal-update-status">&times;</button>
+      </div>
+      <form id="form-modal-status">
+        <input type="hidden" id="modal-ticket-id">
+        <div class="form-group">
+          <label class="form-label" for="modal-status-select">Select New Status:</label>
+          <select id="modal-status-select" class="form-select" required>
+            <option value="Assigned">Assigned</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Resolved">Resolved</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="modal-status-notes">Resolution Notes / Action Taken:</label>
+          <textarea id="modal-status-notes" class="form-textarea" rows="3" placeholder="Explain steps taken or resolution details..."></textarea>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn btn-secondary" data-close="modal-update-status">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Status</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. Priority Override Modal (Admin) -->
+  <div id="modal-override-priority" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="color: var(--amber);">⚡ Emergency Priority Override</h3>
+        <button class="modal-close" data-close="modal-override-priority">&times;</button>
+      </div>
+      <form id="form-modal-override">
+        <input type="hidden" id="override-ticket-id">
+        <div class="form-group">
+          <label class="form-label" for="override-select">Select Override Priority:</label>
+          <select id="override-select" class="form-select" required>
+            <option value="H">High (H) — Immediate Dispatch Priority</option>
+            <option value="M">Medium (M)</option>
+            <option value="L">Low (L)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="override-reason">Justification Reason *</label>
+          <textarea id="override-reason" class="form-textarea" rows="3" placeholder="Provide administrative rationale for overriding ticket priority..." required></textarea>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn btn-secondary" data-close="modal-override-priority">Cancel</button>
+          <button type="submit" class="btn btn-navy">Confirm Override</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. Add Routing Rule Modal -->
+  <div id="modal-add-rule" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Create Routing Rule (BCS502)</h3>
+        <button class="modal-close" data-close="modal-add-rule">&times;</button>
+      </div>
+      <form id="form-modal-add-rule">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="rule-dept">Department Code *</label>
+            <input type="text" id="rule-dept" class="form-input" placeholder="e.g. CS, IT, ANY" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="rule-cat">Issue Category *</label>
+            <select id="rule-cat" class="form-select" required>
+              <option value="HARDWARE">HARDWARE</option>
+              <option value="SOFTWARE">SOFTWARE</option>
+              <option value="NETWORK">NETWORK</option>
+              <option value="ACCESS">ACCESS</option>
+              <option value="OTHER">OTHER</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="rule-primary">Primary Team (8 Cap) *</label>
+            <select id="rule-primary" class="form-select" required>
+              <option value="1">Team 1 (Hardware)</option>
+              <option value="2">Team 2 (Software)</option>
+              <option value="3">Team 3 (Network)</option>
+              <option value="4">Team 4 (Access/General)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="rule-backup">Backup Team (Overflow) *</label>
+            <select id="rule-backup" class="form-select" required>
+              <option value="2">Team 2 (Software)</option>
+              <option value="1">Team 1 (Hardware)</option>
+              <option value="4">Team 4 (Access/General)</option>
+              <option value="3">Team 3 (Network)</option>
+            </select>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn btn-secondary" data-close="modal-add-rule">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Routing Rule</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Add Handler Modal -->
+  <div id="modal-add-handler" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Register New Support Handler</h3>
+        <button class="modal-close" data-close="modal-add-handler">&times;</button>
+      </div>
+      <form id="form-modal-add-handler">
+        <div class="form-group">
+          <label class="form-label" for="new-handler-name">Full Name *</label>
+          <input type="text" id="new-handler-name" class="form-input" placeholder="e.g. Jordan Lee" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="new-handler-email">Email Address *</label>
+          <input type="email" id="new-handler-email" class="form-input" placeholder="e.g. jlee@helpdeskx.com" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="new-handler-team">Assign Team *</label>
+            <select id="new-handler-team" class="form-select" required>
+              <option value="1">Team 1</option>
+              <option value="2">Team 2</option>
+              <option value="3">Team 3</option>
+              <option value="4">Team 4</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="new-handler-dept">Department</label>
+            <input type="text" id="new-handler-dept" class="form-input" value="IT">
+          </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn btn-secondary" data-close="modal-add-handler">Cancel</button>
+          <button type="submit" class="btn btn-navy">Register Handler</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" style="position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999; display: flex; flex-direction: column; gap: 0.5rem;"></div>
+
+  <!-- App JavaScript -->
+  <script src="/js/app.js"></script>
+</body>
+</html>
